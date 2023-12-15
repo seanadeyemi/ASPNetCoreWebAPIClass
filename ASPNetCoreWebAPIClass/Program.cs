@@ -47,6 +47,8 @@ var services = builder.Services;
 services.AddScoped<IProductService, ProductService>();
 services.AddScoped<IUserAccountService, UserAccountService>();
 services.AddScoped<ITokenService, TokenService>();
+services.AddScoped<IUserService, UserService>();
+services.AddScoped<ReqResService>();
 
 
 var configuration = builder.Configuration;
@@ -65,6 +67,13 @@ services.AddIdentity<User, Role>(o =>
     o.Password.RequireUppercase = false;
 }).AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
+
+
+services.AddHttpClient("reqres", c =>
+{
+    c.BaseAddress = new Uri("https://reqres.in/");
+    c.DefaultRequestHeaders.Add("Accept", "application/json");
+});
 
 services.AddAutoMapper(typeof(Program));
 services.AddAuthentication(options =>

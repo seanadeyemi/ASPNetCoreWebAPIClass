@@ -30,6 +30,7 @@ namespace ASPNetCoreWebAPIClass.Domain.Services
             this._context = _context;
             _environment = environment;
             _mapper = mapper;
+
         }
 
         public ApiResponse<List<ProductResponse>> GetAllProducts()
@@ -185,6 +186,9 @@ namespace ASPNetCoreWebAPIClass.Domain.Services
 
             return saleItems;
         }
+
+
+
 
     }
 }
