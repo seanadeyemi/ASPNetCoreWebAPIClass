@@ -1,5 +1,6 @@
 ﻿using ASPNetCoreWebAPIClass.Domain.Entities.Auth;
 using ASPNetCoreWebAPIClass.Domain.Models.Auth;
+using ASPNetCoreWebAPIClass.Domain.Services.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace ASPNetCoreWebAPIClass.Domain.Services
@@ -16,14 +17,15 @@ namespace ASPNetCoreWebAPIClass.Domain.Services
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
         private readonly ITokenService _tokenService;
+        private readonly IEmailService _emailservice;
 
-
-        public UserAccountService(SignInManager<User> signInManager, UserManager<User> userManager, RoleManager<Role> roleManager, ITokenService tokenService)
+        public UserAccountService(SignInManager<User> signInManager, UserManager<User> userManager, RoleManager<Role> roleManager, ITokenService tokenService, IEmailService emailservice)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _roleManager = roleManager;
             _tokenService = tokenService;
+            _emailservice = emailservice;
         }
 
         public async Task<(bool, string)> CreateUser(SignupModel model)
@@ -46,8 +48,20 @@ namespace ASPNetCoreWebAPIClass.Domain.Services
 
             if (result.Succeeded)
             {
+                _emailservice.SendEmail(new EmailModel
+                {
+                    body = $"<p>Dear {user.FirstName},</p><p>Welcome to our application. We are glad to have you join us.</p><p>For further enquiries please contact our customer care center.</p>",
+                    emailFrom = "seanadeyemi@gmail.com",
+                    emailTo = user.Email,
+                    name = user.FirstName,
+                    subject = "Welcome to ASPNET Core Class app"
+                });
+
                 return (true, "User was created successfully");
             }
+
+
+
 
             return (false, result.Errors.ElementAt(0).Description);
 
