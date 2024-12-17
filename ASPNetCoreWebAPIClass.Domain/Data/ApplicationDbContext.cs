@@ -16,6 +16,16 @@ namespace ASPNetCoreWebAPIClass.Domain.Data
         {
             base.OnModelCreating(builder);
 
+            // Remove "AspNet" prefix from all Identity table names
+            foreach (var entity in builder.Model.GetEntityTypes())
+            {
+                var tableName = entity.GetTableName();
+                if (tableName != null && tableName.StartsWith("AspNet"))
+                {
+                    entity.SetTableName(tableName.Substring("AspNet".Length));
+                }
+            }
+
             var hasher = new PasswordHasher<User>();
 
             //create a role

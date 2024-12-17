@@ -107,6 +107,13 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    await using (var serviceScope = app.Services.CreateAsyncScope())
+    await using (var dbBontext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>())
+    { 
+      await dbBontext.Database.EnsureCreatedAsync();
+    
+    }
 }
 app.UseAuthentication();
 app.UseAuthorization();
